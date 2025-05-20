@@ -1,34 +1,28 @@
 package org.springframework;
 
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.springframework.bean.UserService;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 
 class BeanFactoryTest {
 
-    /**
-     * 测试获取bean
-     */
     @Test
-    public void testGetBean() {
-        // 创建bean工厂
-        BeanFactory beanFactory = new BeanFactory();
-        // 注册bean
-        beanFactory.registerBean("userService",new UserService());
-        // 获取bean
-        UserService userService = (UserService) beanFactory.getBean("userService");
-        // 判空断言
-        assertNotNull(userService);
-        assertEquals("查询用户信息", userService.queryUserInfo());
-    }
+    public void test_BeanFactory(){
 
-    /**
-     * 生产测试bean
-     */
-    class UserService {
-        public String queryUserInfo() {
-            System.out.println("查询用户信息");
-            return "查询用户信息";
-        }
+        // 1.初始化 BeanFactory
+        DefaultListableBeanFactory beanFactory = new DefaultListableBeanFactory();
+
+        // 2.注册 bean
+        BeanDefinition beanDefinition = new BeanDefinition(UserService.class);
+        beanFactory.registerBeanDefinition("userService", beanDefinition);
+
+        // 3.第一次获取 bean
+        UserService userService = (UserService) beanFactory.getBean("userService");
+        userService.queryUserInfo();
+
+        // 4.第二次获取 bean from Singleton
+        UserService userService_singleton = (UserService) beanFactory.getBean("userService");
+        userService_singleton.queryUserInfo();
     }
 }
